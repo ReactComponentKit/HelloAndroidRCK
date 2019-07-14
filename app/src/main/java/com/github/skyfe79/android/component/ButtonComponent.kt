@@ -11,9 +11,7 @@ import org.jetbrains.anko.relativeLayout
 import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.wrapContent
 
-class ButtonComponent(
-    override var token: Token,
-    override var receiveState: Boolean = false): ViewComponent(token, receiveState) {
+class ButtonComponent(token: Token): ViewComponent(token, false) {
     private lateinit var button: Button
 
     override fun layout(ui: org.jetbrains.anko.AnkoContext<Context>): View = with(ui) {
