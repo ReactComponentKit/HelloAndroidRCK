@@ -10,20 +10,7 @@ Basic example for AndroidReactComponentKit :)
 data class ClickButtonAction(val message: String): Action
 ```
 
-## Reducers
-
-```kotlin
-fun MainViewModel.routes(state: State, action: Action): Observable<State> {
-    val mainState = (state as? MainState) ?: return Observable.just(state)
-
-    return when (action) {
-        is ClickButtonAction ->  Observable.just(mainState.copy(route = Route.Alert(action.message)))
-        else -> Observable.just(state)
-    }
-}
-```
-
-## MainViewModel & MainState
+## State 
 
 ```kotlin
 sealed class Route {
@@ -31,24 +18,40 @@ sealed class Route {
     data class Alert(val message: String): Route()
 }
 
-data class MainState(val route: Route): State()
+data class MainState(
+    val route: Route = Route.None
+): State() {
+    override fun copyState(): State {
+        return this.copy()
+    }
+}
+```
 
-class MainViewModel: RootViewModelType<MainState>() {
+## MainViewModel & Define Flow
+
+```kotlin
+class MainViewModel(application: Application): RCKViewModel<MainState>(application) {
 
     val route = Output<Route>(Route.None)
 
     override fun setupStore() {
-        store.set(
-            initialState = MainState(Route.None),
-            reducers = arrayOf(::routes)
-        )
+
+        initStore { store ->
+            store.initialState(MainState())
+
+            store.flow<ClickButtonAction>(
+                { state, action ->
+                    state.copy(route = Route.Alert(action.message))
+                }
+            )
+        }
+
     }
 
     override fun on(newState: MainState) {
-        route.acceptWithoutCompare(newState.route)
+        route.accept(newState.route).afterReset(Route.None)
     }
-}
-```
+}```
 
 ## MainActivity
 
@@ -99,9 +102,7 @@ class MainActivity : AppCompatActivity() {
 ## Button Component
 
 ```kotlin
-class ButtonComponent(
-    override var token: Token,
-    override var receiveState: Boolean = false): ViewComponent(token, receiveState) {
+class ButtonComponent(token: Token): ViewComponent(token) {
     private lateinit var button: Button
 
     override fun layout(ui: org.jetbrains.anko.AnkoContext<Context>): View = with(ui) {
@@ -110,15 +111,11 @@ class ButtonComponent(
             button = button("Click Me")
         }
 
-        setupActions()
-
-        return layout
-    }
-
-    private fun setupActions() {
-        button.onClick {
+        button.setOnClickListener {
             dispatch(ClickButtonAction("Hello AndroidReactComponentKit :)"))
         }
+
+        return layout
     }
 }
 ```

@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/HelloAndroidRCK.iml" filepath="$PROJECT_DIR$/HelloAndroidRCK.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/HelloAndroidRCK-app.iml" filepath="$PROJECT_DIR$/app/HelloAndroidRCK-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ReactComponentKit-HelloAndroidRCK.iml" filepath="$PROJECT_DIR$/ReactComponentKit-HelloAndroidRCK.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
